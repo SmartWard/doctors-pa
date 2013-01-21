@@ -1,0 +1,17 @@
+{
+  "name": "smart-ward",
+  "version": "0.3.0",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.x",
+    "ejs": "0.x",
+    "mongoose": "3.x",
+	"pwd": "0.0.x",
+	"underscore": "1.4.x",
+	"async": "0.1.x",
+	"socket.io": "0.9.x"
+  }
+}

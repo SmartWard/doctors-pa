@@ -1,0 +1,49 @@
+<% include ../../header %>
+
+<div data-role="page" id="page_admin_users_view">
+	<div data-role="header" data-position="fixed" data-id="admin_header_panel">
+		<h1>User Details</h1>
+	</div>
+	<div data-role="content">
+		<h2><%= user.full_name %></h2>
+		<p><%= user.username %></p>
+		<br><br>
+		<div class="ui-grid-a">
+			<div class="ui-block-a" style="width:30%;"><strong>Type:</strong></div>
+			<div class="ui-block-b"><%= user.type.charAt(0).toUpperCase() + user.type.slice(1) %></div>
+		</div>
+		<br>
+		<div class="ui-grid-a">
+			<div class="ui-block-a" style="width:30%;"><strong>Specialty:</strong></div>
+			<div class="ui-block-b"><%= user.specialty %></div>
+		</div>
+		<br>
+		<div class="ui-grid-a">
+			<div class="ui-block-a" style="width:30%;"><strong>Phone:</strong></div>
+			<div class="ui-block-b"><%= user.phone %></div>
+		</div>
+		<br>
+		<div class="ui-grid-a">
+			<div class="ui-block-a" style="width:30%;"><strong>Bleep:</strong></div>
+			<div class="ui-block-b"><%= user.bleep %></div>
+		</div>
+		<br>
+		<div class="ui-grid-a">
+			<div class="ui-block-a" style="width:30%;"><strong>Level:</strong></div>
+			<div class="ui-block-b"><%= user.is_admin == 'yes' ? 'Admin' : 'User' %></div>
+		</div>
+		<br><br>
+		<a href="/admin/users" data-role="button" data-transition="slide" data-direction="reverse" data-icon="arrow-l" data-theme="b">Back</a>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="admin_footer_panel">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="/admin" data-transition="slide" data-direction="reverse">Index</a></li>
+				<li><a href="/admin/users" class="ui-btn-active ui-state-persist" data-transition="slide" data-direction="reverse">Users</a></li>
+				<li><a href="/admin/wards" data-transition="slide">Wards</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../../footer %>

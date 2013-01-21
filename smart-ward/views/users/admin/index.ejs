@@ -1,0 +1,37 @@
+<% include ../../header %>
+
+<div data-role="page" id="page_admin_users_index">
+	<div data-role="header" data-position="fixed" data-id="admin_header_panel">
+		<h1>Users</h1>
+	</div>
+	<div data-role="content">
+		<h3 style="margin: 0px auto;text-align:center;">Select a User</h3>
+		<br>
+		<ul data-role="listview" data-inset="true">
+			<% for (var u in users) { %>
+				<li>
+					<a href="/admin/users/view/<%= users[u].id %>" data-transition="slide">
+						<h3><%= users[u].full_name %></h3>
+						<p><%= users[u].username %></p>
+						<span class="ui-li-aside">
+							<span style="color:#ff9900;" class="ui-li-count"><%= users[u].specialty %></span>
+						</span>
+					</a>
+				</li>
+			<% } %>
+		</ul>
+		<br>
+		<a href="/admin/users/add" data-transition="slide" data-role="button" data-theme="b" data-icon="plus">Add User</a>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="admin_footer_panel">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="/admin" data-transition="slide" data-direction="reverse">Index</a></li>
+				<li><a href="/admin/users" class="ui-btn-active ui-state-persist">Users</a></li>
+				<li><a href="/admin/wards" data-transition="slide">Wards</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../../footer %>

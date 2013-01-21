@@ -1,0 +1,45 @@
+<% include ../header %>
+
+<div data-role="page" id="page_tasks_my">
+	<div data-role="header" data-position="fixed" data-id="user_header_panel">
+		<h1>My Tasks</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" data-filter="true">
+			<% tasks.forEach(function(task){ %>
+				<li>
+					<a href="/tasks/view/<%= task.id %>" data-transition="slide">
+						<%
+							var img = '/img/green.png';
+							switch (task.priority)
+							{
+								case 2:
+									img = '/img/orange.png';
+									break;
+								case 3:
+									img = '/img/red.png';
+								default:
+							}
+
+						%>
+						<img src="<%= img %>" class="ui-li-icon">
+						<%= task.name %>
+						<p class="ui-li-aside" style="font-size:0.85em;"><%= patients[task.id] %></p>
+					</a>
+				</li>
+			<% }); %>
+		</ul>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="user_footer_panel">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a href="/" data-transition="pop" data-icon="grid">Wards</a></li>
+				<li><a href="/tasks/my" data-transition="pop" data-icon="check" class="ui-btn-active ui-state-persist">Tasks</a></li>
+				<li><a href="/patients/my" data-transition="pop" data-icon="star">Patients</a></li>
+				<li><a href="/users" data-transition="pop" data-icon="search">Users</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>

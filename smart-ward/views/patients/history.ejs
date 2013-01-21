@@ -1,0 +1,88 @@
+<% include ../header %>
+
+<div data-role="page" id="page_patients_view_history">
+	<div data-role="header" data-position="fixed" data-id="user_header_panel">
+		<% if (ward) { %>
+			<a href="/wards/view/<%= ward.id %>" data-icon="arrow-l" data-role="button" data-theme="b" data-transition="slide" data-direction="reverse">
+				<%= ward.name %>
+			</a>
+		<% } %>
+		<h1>Patient History</h1>
+	</div>
+	<div data-role="content">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="/patients/view/<%= patient.id %>" data-transition="flip" data-direction="reverse">Overview</a></li>
+				<li><a href="" class="ui-btn-active ui-state-persist">History</a></li>
+			</ul>
+		</div>
+		<br>
+		<h3><%= patient.full_name %></h3>
+		<%= patient.age %>
+		<% if (patient.gender == 'male') { %>
+			<span style="color:#0a8afa;">M</span>
+		<% } else { %>
+			<span style="color:#ed2828;">F</span>
+		<% } %>
+		<br>
+		<br>
+		<div style="background-color:white; padding:15px; font-size: 0.80em;" class="ui-corner-all ui-shadow">
+			<% patient.medical_history.forEach(function(ent, index) { %>
+				<div>
+					<div style="font-size:1.1em;">
+						<% if (ent.user) { %>
+							<strong style="margin-right: 30px;"><%= ent.user %></strong>
+						<% } %>
+						<span style="color:gray;width:100%;white-space:pre;"><%= ent.created.toLocaleTimeString() %> <%= ent.created.toLocaleDateString() %></span>
+					</div>
+					<%= ent.message %>
+				</div>
+				<% if (index + 1 < patient.medical_history.length) { %>
+					<br><br>
+				<% } %>
+			<% }); %>
+		</div>
+		<br>
+		<br>
+		<ul data-role="listview" data-inset="true" data-divider-theme="c">
+			<li data-role="list-divider">Completed Tasks</li>
+			<% patient.tasks.forEach(function(task) { %>
+				<li>
+					<a href="/tasks/view/<%= task.id %>" data-transition="slide">
+						<%
+							var img = '/img/green.png';
+							switch (task.priority)
+							{
+								case 2:
+									img = '/img/orange.png';
+									break;
+								case 3:
+									img = '/img/red.png';
+								default:
+							}
+
+						%>
+						<img src="<%= img %>" class="ui-li-icon">
+						<%= task.name%>
+						<p class="ui-li-aside" style="font-size:0.85em;">
+							<%= task.time.toLocaleTimeString() %> <%= task.time.toLocaleDateString() %>
+						</p>
+
+					</a>
+				</li>
+			<% }); %>
+		</ul>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="user_footer_panel">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a href="/" data-transition="pop" data-icon="grid">Wards</a></li>
+				<li><a href="/tasks/my" data-transition="pop" data-icon="check">Tasks</a></li>
+				<li><a href="/patients/my" data-transition="pop" data-icon="star" class="ui-btn-active ui-state-persist">Patients</a></li>
+				<li><a href="/users" data-transition="pop" data-icon="search">Users</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>

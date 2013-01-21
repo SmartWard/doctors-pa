@@ -1,0 +1,89 @@
+<% include ../header %>
+
+<div data-role="page" id="page_users_index">
+	<div data-role="header" data-position="fixed" data-id="user_header_panel">
+		<h1>Staff</h1>
+	</div>
+	<div data-role="content">
+		<script type="text/javascript">
+			function refresh_users_list(users_list) {
+				var ulist = {};
+
+				jQuery.each(users_list, function(i, u) {
+					if (u.online) {
+						ulist[u.id] = u;
+					}
+				});
+
+				jQuery.each(users_list, function(i, u) {
+					if (!u.online) {
+						ulist[u.id] = u;
+					}
+				});
+
+				var container = $('#users_list_container');
+				container.empty();
+
+				container.append('<ul id="users_list_view" data-role="listview" data-filter="true"></ul>');
+				var list = $('#users_list_view');
+				container.trigger('create');
+
+				jQuery.each(ulist, function(i, u) {
+					var li = '<li><a href="" data-transition="slide">';
+
+					if (u.online) {
+						li += '<img src="/img/green.png" class="ui-li-icon">';
+					} else {
+						li += '<img src="/img/gray.png" class="ui-li-icon">';
+					}
+
+					li += u.name_with_type;
+					li += '<p class="ui-li-aside" style="font-size:0.85em;">';
+
+					if (u.online) {
+						li += 'Online';
+					} else {
+						li += 'Offline';
+					}
+
+					li += '</p></a></li>';
+
+					list.append(li);
+				});
+
+				list.listview('refresh');
+			}
+
+			var user_list_changed_cb = function(data) {
+				console.log(data);
+				refresh_users_list(data.user_status_list);
+			};
+
+			$('#page_users_index').bind('pagecreate', function(){
+				socket.on('users_list_changed', user_list_changed_cb);
+				socket.emit('get_users_list');
+			});
+
+			$('#page_users_index').bind('pageremove', function(){
+				socket.removeListener('users_list_changed', user_list_changed_cb);
+			});
+		</script>
+		<div id="users_list_container"></div>
+		<br>
+		<br>
+		<br>
+		<a href="/users/logout" data-role="button" data-theme='b'>Logout</a>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="user_footer_panel">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a href="/" data-transition="pop" data-icon="grid">Wards</a></li>
+				<li><a href="/tasks/my" data-transition="pop" data-icon="check">Tasks</a></li>
+				<li><a href="/patients/my" data-transition="pop" data-icon="star">Patients</a></li>
+				<li><a href="/users" data-transition="pop" data-icon="search" class="ui-btn-active ui-state-persist">Users</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>

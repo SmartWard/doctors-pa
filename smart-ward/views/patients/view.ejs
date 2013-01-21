@@ -1,0 +1,203 @@
+<% include ../header %>
+
+<div data-role="page" id="page_patients_view">
+	<div data-role="header" data-position="fixed" data-id="user_header_panel">
+		<% if (ward) { %>
+			<a href="/wards/view/<%= ward.id %>" data-icon="arrow-l" data-role="button" data-theme="b" data-transition="slide" data-direction="reverse">
+				<%= ward.name %>
+			</a>
+		<% } %>
+		<h1>Patient Profile</h1>
+	</div>
+	<div data-role="content">
+		<script type="text/javascript">
+			$('#page_patients_view').bind('pagecreate', function() {
+				$('#patient_view_ward').die('change').live('change', function(event, ui) {
+					$.post('/patients/edit/<%= patient.id %>/ward', {ward_id: $(this).val()}, function(res) {
+						if (res.status != 0) {
+							alert(res.message);
+						} else {
+							$.mobile.changePage('/patients/view/<%= patient.id %>', {transition: 'pop', reloadPage: true, changeHash: false});
+						}
+					});
+				});
+
+				$('#patient_view_user').die('change').live('change', function(event, ui) {
+					$.post('/patients/edit/<%= patient.id %>/user', {user_id: $(this).val()}, function(res) {
+						if (res.status != 0) {
+							alert(res.message);
+						} else {
+							$.mobile.changePage('/patients/view/<%= patient.id %>', {transition: 'pop', reloadPage: true, changeHash: false});
+						}
+					});
+				});
+
+				$('#patient_view_bed').die('change').live('change', function(event, ui) {
+					$.post('/patients/edit/<%= patient.id %>/bed', {bed_name: $(this).val()}, function(res) {
+						if (res.status != 0) {
+							alert(res.message);
+						} else {
+							$.mobile.changePage('/patients/view/<%= patient.id %>', {transition: 'pop', reloadPage: true, changeHash: false});
+						}
+					});
+				});
+			});
+		</script>
+		<div data-role="navbar">
+			<ul>
+				<li><a href="" class="ui-btn-active ui-state-persist">Overview</a></li>
+				<li>
+					<a href="/patients/view/<%= patient.id %>/history" data-transition="flip" id="link_to_patient_history_page">History</a></li>
+			</ul>
+		</div>
+		<br>
+		<h3><%= patient.full_name %></h3>
+		<%= patient.age %>
+		<% if (patient.gender == 'male') { %>
+			<span style="color:#0a8afa;">M</span>
+		<% } else { %>
+			<span style="color:#ed2828;">F</span>
+		<% } %>
+		<br>
+		<br>
+		<%= ward ? ward.name : '' %> <%= patient.bed ? ' / ' + patient.bed : '' %>
+		<br>
+		<br>
+
+		<% if (patient.tasks.length) { %>
+			<ul data-role="listview" data-inset="true" data-divider-theme="c">
+				<li data-role="list-divider">Active Tasks</li>
+				<% patient.tasks.forEach(function(task) { %>
+					<li>
+						<a href="/tasks/view/<%= task.id %>" data-transition="slide">
+							<%
+								var img = '/img/green.png';
+								switch (task.priority)
+								{
+									case 2:
+										img = '/img/orange.png';
+										break;
+									case 3:
+										img = '/img/red.png';
+									default:
+								}
+
+							%>
+							<img src="<%= img %>" class="ui-li-icon" style="vertical-align:middle;">
+							<%= task.name %>
+							<% if (new Date() < task.time) {%>
+								<%
+									var diffMs = task.time - new Date; // time difference in milliseconds
+									var diffDays = Math.round(diffMs / 86400000); // days
+									var diffHrs = Math.round((diffMs % 86400000) / 3600000); // hours
+									var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+								%>
+								<p style="margin-top: 5px;">
+									<% if(diffDays > 0) { %><%= diffDays %> days <% } %>
+									<% if(diffHrs > 0) { %><%= diffHrs %> hours <% } %>
+									<% if(diffMins > 0) { %><%= diffMins %> minutes <% } %>
+									left
+								</p>
+							<% } else { %>
+								<p style="margin-top: 5px;">
+									<%= task.time.toLocaleDateString() %> <%= task.time.toLocaleTimeString() %>
+								</p>
+							<% } %>
+							<% if (task.user) { %>
+								<p class="ui-li-aside" style="font-size:0.85em;"><%= task.user %></p>
+							<% } %>
+						</a>
+					</li>
+				<% }); %>
+			</ul>
+			<br>
+		<% } %>
+		<a href="/tasks/add/<%= patient.id %>" data-transition="slide" data-role="button" data-theme="b" data-icon="plus">Create New Task</a>
+		<br>
+		<br>
+		<div style="background-color:white; padding:15px; font-size: 0.80em;" class="ui-corner-all ui-shadow">
+			<div>
+				<strong>Registered:</strong>
+				<br>
+				<%= patient.created.toLocaleTimeString() %> <%= patient.created.toLocaleDateString() %>
+			</div>
+			<br>
+			<div class="ui-grid-a" style="margin-bottom:7px;">
+				<div class="ui-block-a" style="width: 33%; font-weight:bold;padding-top: 10px;">
+					Ward:
+				</div>
+				<div class="ui-block-b" style="width:67%;">
+					<select id="patient_view_ward" data-native-menu="false" data-mini="true" data-inline="true">
+						<option value=" ">No Ward</option>
+						<% list_of_wards.forEach(function(w) { %>
+							<option
+								value="<%= w.id %>"
+								<% if(ward && w.id == ward.id) { %>
+									selected="selected"
+								<% } %>
+							>
+								<%= w.name %>
+							</option>
+						<% });%>
+					</select>
+				</div>
+			</div>
+			<br>
+			<div class="ui-grid-a" style="margin-bottom:7px;">
+				<div class="ui-block-a" style="width: 33%; font-weight:bold;padding-top: 10px;">
+					User:
+				</div>
+				<div class="ui-block-b" style="width:67%;">
+					<select id="patient_view_user" data-native-menu="false" data-mini="true" data-inline="true">
+						<option value=" ">No One</option>
+						<% list_of_doctors.forEach(function(u) { %>
+							<option
+								value="<%= u.id %>"
+								<% if(user && u.id == user.id) { %>
+									selected="selected"
+								<% } %>
+							>
+								<%= u.name_with_type %>
+							</option>
+						<% });%>
+					</select>
+				</div>
+			</div>
+			<% if (ward) { %>
+				<br>
+				<div class="ui-grid-a" style="margin-bottom:7px;">
+					<div class="ui-block-a" style="width: 33%; font-weight:bold;padding-top: 10px;">
+						Bed:
+					</div>
+					<div class="ui-block-b" style="width:67%;">
+						<select id="patient_view_bed" data-native-menu="false" data-mini="true" data-inline="true">
+							<option value=" ">No Bed</option>
+							<% ward.beds.forEach(function(b) { %>
+								<option
+									value="<%= b.name %>"
+									<% if(b.name == patient.bed) { %>
+										selected="selected"
+									<% } %>
+								>
+									<%= b.name %>
+								</option>
+							<% });%>
+						</select>
+					</div>
+				</div>
+			<% } %>
+		</div>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="user_footer_panel">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a href="/" data-transition="pop" data-icon="grid">Wards</a></li>
+				<li><a href="/tasks/my" data-transition="pop" data-icon="check">Tasks</a></li>
+				<li><a href="/patients/my" data-transition="pop" data-icon="star" class="ui-btn-active ui-state-persist">Patients</a></li>
+				<li><a href="/users" data-transition="pop" data-icon="search">Users</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>
