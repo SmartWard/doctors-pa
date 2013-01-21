@@ -1,0 +1,23 @@
+<% include ../header %>
+
+<div data-role="page" id="page_admin_index">
+	<div data-role="header" data-position="fixed" data-id="admin_header_panel">
+		<h1>Administrator</h1>
+	</div>
+	<div data-role="content">
+		<div class="ui-body ui-body-b" style="margin-top:20%;">
+			<a href="/users/logout" data-role="button" data-theme='b'>Logout</a>
+		</div>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="admin_footer_panel">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="/admin" class="ui-btn-active ui-state-persist">Index</a></li>
+				<li><a href="/admin/users" data-transition="slide">Users</a></li>
+				<li><a href="/admin/wards" data-transition="slide">Wards</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>

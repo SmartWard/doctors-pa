@@ -1,0 +1,51 @@
+<% include ../header %>
+
+<div data-role="page" id="page_patients_my">
+	<div data-role="header" data-position="fixed" data-id="user_header_panel">
+		<h1>My Patients</h1>
+	</div>
+	<div data-role="content">
+		<ul data-role="listview" data-filter="true">
+			<% patients.forEach(function(val){ %>
+				<li>
+					<a href="/patients/view/<%= val.id %>" data-transition="slide">
+						<% if (tasks[val.id] > 0) {%>
+							<p class="ui-li-aside" style="font-size:0.85em;">
+								<span style="font-weight:bold;color:#3da600;"><%= tasks[val.id] %></span>
+								<%= tasks[val.id] == 1 ? 'task' : 'tasks' %>
+							</p>
+						<% } %>
+						<h3><%= val.full_name %></h3>
+						<p>
+							<%= val.age %>
+							<% if (val.gender == 'male') { %>
+								<span style="color:#0a8afa;">M</span>
+							<% } else { %>
+								<span style="color:#ed2828;">F</span>
+							<% } %>
+							- <%= wards[val.id] %>
+							<%= val.bed ? ' / ' + val.bed : '' %>
+						</p>
+					</a>
+				</li>
+			<% }); %>
+		</ul>
+		<br>
+		<br>
+		<a href="/patients/add" data-theme="b" data-transition="slide" data-role="button" data-icon="plus">
+			Add New Patient
+		</a>
+	</div>
+	<div data-role="footer" data-position="fixed" data-id="user_footer_panel">
+		<div data-role="navbar" data-iconpos="top">
+			<ul>
+				<li><a href="/" data-transition="pop" data-icon="grid">Wards</a></li>
+				<li><a href="/tasks/my" data-transition="pop" data-icon="check">Tasks</a></li>
+				<li><a href="/patients/my" data-transition="pop" data-icon="star" class="ui-btn-active ui-state-persist">Patients</a></li>
+				<li><a href="/users" data-transition="pop" data-icon="search">Users</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<% include ../footer %>
